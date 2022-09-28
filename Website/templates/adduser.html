@@ -5,7 +5,15 @@
 <form method="POST">
     <h3 align="center"> Add User</h3>
     <!--Creating the form for a user to be added. Will ask for the first name, last name, 2 passwords to ensure it is correct, and if the user is an elevated user.
-    username will automatically turn into first initial (dot) last name. This will also confirm with the active user's password-->
+    username will automatically turn into first initial (dot) last name. This will also confirm with the active user's password
+        Variables used:
+        fname
+        lname
+        password1
+        password2
+        user_status -will return 'on' if enabled
+        adminpassword
+-->
     <div class="form-group">
         <label for="fname"> First Name</label>
         <input
