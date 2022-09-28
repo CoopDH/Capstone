@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Add User{% endblock %}
+
+{% block content%} 
+<form method="POST">
+    <h3 align="center"> Add User</h3>
+    <!--Creating the form for a user to be added. Will ask for the first name, last name, 2 passwords to ensure it is correct, and if the user is an elevated user.
+    username will automatically turn into first initial (dot) last name. This will also confirm with the active user's password-->
+    <div class="form-group">
+        <label for="fname"> First Name</label>
+        <input
+            type="text"
+            class="form-control"
+            id="fname"
+            name="fname"
+            placeholder="Enter first name"
+        />
+    </div>
+    <div class="form-group">
+        <label for="lname"> Last Name</label>
+        <input
+            type="text"
+            class="form-control"
+            id="lname"
+            name="lname"
+            placeholder="Enter last name"
+        />
+    </div>
+    <div class="form-group">
+        <label for="password1"> Password</label>
+        <input
+            type="password"
+            class="form-control"
+            id="password1"
+            name="password1"
+            placeholder="Enter password"
+        />
+    </div>
+    <div class="form-group">
+        <label for="password2"> Confirm Password</label>
+        <input
+            type="password"
+            class="form-control"
+            id="password2"
+            name="password2"
+            placeholder="Confirm password"
+        />
+    </div>
+    <div class="form-group">
+        <label for="user_status"> Is user an elevated user?</label>
+        <input
+            type="checkbox"
+            class="form-check-input"
+            id="user_status"
+            name="user_status"
+            placeholder="Is user an elevated user?"
+        />
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+
+</form>
+{%endblock%}
