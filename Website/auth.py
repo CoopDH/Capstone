@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
+from flask_login import login_user, login_required, logout_user, current_user
 
 auth = Blueprint('auth', __name__)
 
@@ -16,6 +17,7 @@ def login():
         if user:
             if check_password_hash(user.password_hash, password):
                 flash('Log in Successful', category='success')
+                login_user(user, remember=True)
                 return redirect(url_for('views.home'))
             else:
                 flash('Log in failed', category='error')
@@ -23,13 +25,16 @@ def login():
             flash('User doesnt exist', category='error')
         
     
-    return render_template("login.html")
+    return render_template("login.html", user=current_user)
 
 @auth.route('/logout')
+@login_required
 def logout():
-    return "<p>Logout</p>"
+    logout_user()
+    return redirect(url_for('auth.login'))
 
 @auth.route('/adduser', methods=['GET', 'POST'])
+@login_required
 def adduser():
     #injests from the form being filled out
     if request.method == 'POST':
@@ -51,7 +56,7 @@ def adduser():
         #confirming if the username already exists. Initialization conducts the search. If true, loops through a temp name with a number at the end.
         #if the temp username does not exist, it establishes the new username and estblishes the flag to get out
         user = User.query.filter_by(username=username).first()
-        i=0
+        i=1
         while user:
             tempusername= username + str(i)
             tempuser = User.query.filter_by(username=tempusername).first()
@@ -78,12 +83,15 @@ def adduser():
             flash('User ' + username + ' added', category='success')
             
 
-    return render_template("adduser.html")
+    return render_template("adduser.html", user=current_user)
 
 @auth.route('/userpage')
+@login_required
 def userpage():
-    return render_template("userpage.html")
+    return render_template("userpage.html", user=current_user)
 
-@auth.route('/chng')
-def chng():
-    return render_template("chng.html")
+@auth.route('/chng', defaults={'usr' : 0})
+@auth.route('/chng/<int:usr>')
+@login_required
+def chng(usr):
+    return render_template("chng.html", user=current_user, usr=User.query.filter_by(id=usr).first())

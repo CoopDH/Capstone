@@ -27,23 +27,27 @@
         class="navbar-toggler"
         type="button"
         data-toggle="collapse"
-        data-target="#navbar"
-      >
+        data-target="#navbar">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbar">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" id="login" href="/login">Login</a>
+            {% if user.is_authenticated %}
+            <a class="nav-item nav-link" id="user" href="/userpage">{{user.username}}</a>
             <a class="nav-item nav-link" id="home" href="/">Home</a>
-            <a class="nav-item nav-link" id="adduser" href="/ticket">Ticket</a>
-            <a class="nav-item nav-link" id="user" href="/userpage">User</a>
+            <a class="nav-item nav-link" id="adduser" href="/ticket">New Ticket</a>
+            {% if user.user_status == 2 %}
             <a class="nav-item nav-link" id="login" href="/admin">Admin</a>
             <a class="nav-item nav-link" id="adduser" href="/adduser">Add User</a>
-            <a class="nav-item nav-link" id="logout" href="/chng">User Change</a>
+            {% endif %}
+
             <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+            {% else %}
+            <a class="nav-item nav-link" id="login" href="/login">Login</a>
+            {% endif %}
         </div>
-      </div>
+       </div>
     </nav>
 
     <!--Runs through the flash messages and displays a red or green alert for success or error-->

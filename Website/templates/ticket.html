@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Ticket{% endblock %}
+{% block title %}Ticket {% if tickets %}{{tickets.id}}{% endif %}{% endblock %}
 
 {% block content%} <h1> This is the ticket page</h1>
 
@@ -8,6 +8,81 @@
     <br />
     <P1 align="center"> The user will be able to edit items in the ticket and add entries</P1>
     <!--TEMP Delete befor production-->    
+
+    <br />
+    <br />
+
+    <form method="POST">
+        <!-- Row 1,  Ticket #, creation and close date, all read only-->
+        <div class="form-row align-items-center">
+          <div class="col-auto">
+            <label for="TicketID">Ticket #</label>
+            <input type="text" id="TicketID" name="TicketID" placeholder="###" {% if tickets %} value = {{tickets.id}}{% endif %} readonly>
+          </div>
+          <div class="col-auto">
+            <label for="creation_date">Creation date</label>
+            <input type="text" id="creation_date" placeholder="Creation Date" name="creation_date" {% if tickets %} value={{tickets.creation_date}}{% endif %} readonly>
+          </div>
+          <div class="col-auto">
+              <label for="close_date">Closed date</label>
+              <input type="text" id="close_date" placeholder="Closed Date" name="close_date" {% if tickets %} value={{tickets.close_date}} {% endif %} readonly>
+          </div>
+        </div>
+        <!-- Row 2,  Customer Name & Customer Contact-->
+        <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="customer_name">Customer Name</label>
+              <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Customer Name" {% if tickets %} value={{tickets.customer_name}}{% endif %}>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="customer_contact">Customer Contact</label>
+              <input type="text" class="form-control" id="customer_contact" name="customer_contact" placeholder="Customer Contact" {% if tickets %} value={{tickets.customer_contact}}{% endif %}>
+            </div>
+          </div>
+        <!-- Row 3,  Status & Short Description-->
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <label for="status">Status</label>
+                <select id="status" class="form-control" name="status">
+                    {% if tickets %}
+                        {% if tickets.status == 0 %}
+                        <option value='0' selected>Closed</option>
+                        <option value='1'>Open</option>
+                        {%else%}
+                        <option value='0'>Closed</option>
+                        <option value='1' selected>Open</option>
+                        {%endif%}
+                    {% else %}
+                    <option value='0'>Closed</option>
+                    <option value='1' selected>Open</option>
+                  {%endif%}
+                </select>
+            </div>
+            <div class="col-9">
+                <label for="short_description">Short Description</label>
+                <input type="text" class="form-control" id="short_description" name="short_description"placeholder="Short Description" {% if tickets %} value={{tickets.short_description}}{% endif %}>
+              </div>
+        </div>
+        <br />
+        <br />
+
+        <h3 align="center"> Entries</h3>
+
+        <!-- Text area for note entry-->
+        <textarea name="note" id="note" class="form-control"></textarea>
+        <br />
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Add Entry</button>
+        </div>
+        
+      </form>
+
+
+
+
+
+
+
 
 
 {%endblock%}

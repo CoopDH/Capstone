@@ -6,6 +6,21 @@
     <!--TEMP Delete befor production-->
     <h4 align="center"> This page will display the data on a user, similar to the ticket page, and enable the elevated user to commit changes on status or password</h4>
     <!--TEMP Delete befor production-->    
-
+    <br />
+    <br />
+    <h4>
+        User ID: {{usr.id}} <br>
+        Username: {{usr.username}}<br>
+        First Name: {{usr.fname}}<br>
+        Last Name: {{usr.lname}}<br>
+        User Status: 
+        {% if usr.user_status == 0 %}
+            Deactivated
+        {% elif usr.user_status == 1%}
+            User
+        {% elif usr.user_status == 2%}
+            Admin
+        {% endif %}
+    </h4>
 
 {%endblock%}

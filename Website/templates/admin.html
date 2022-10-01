@@ -9,5 +9,25 @@
     <P1 align="center"> The elevated user will be able to pick a user to revoke access, elevate, or change their password for them</P1>
     <!--TEMP Delete befor production-->    
 
+    <ul class="list-group list-group-flush" id="users">
+        {% for user in users%}
+        <li class="list-group-item">
+            User ID: {{user.id}}
+            Username: {{user.username}}
+            First Name: {{user.fname}}
+            Last Name: {{user.lname}}
+            User Status: 
+            {% if user.user_status == 0 %}
+                Deactivated
+            {% elif user.user_status == 1%}
+                User
+            {% elif user.user_status == 2%}
+                Admin
+            {% endif %}
+            <a href="/chng/{{user.id}}" class="btn btn-primary" onClick=""> Open </a>
+        </li>
+        {% endfor%}
+    </ul>
+
 
 {%endblock%}

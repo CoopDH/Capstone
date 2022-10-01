@@ -8,6 +8,26 @@
     <br />
     <P1 align="center"> Each ticket will have a button to open that specific ticket. Additionally there will be a query function to filter tickets on this page</P1>
     <!--TEMP Delete befor production-->    
+    <br />
+    <br />
+    <h3> Current Tickets</h3>
+    <ul class="list-group list-group-flush" id="tickets">
+        {% for ticket in tickets%}
+        <li class="list-group-item">
+        Ticket Number: {{ ticket.id }}
+        Short Description: {{ ticket.short_description  }}
+        Customer Name: {{ ticket.customer_name  }}
+        Creation Date: {{ ticket.creation_date  }}
+        Ticket Status: 
+            {% if ticket.status == 0 %}
+                Closed
+            {% elif ticket.status == 1%}
+                Open
+            {% endif %}
+        <a href="/ticket/{{ticket.id}}" class="btn btn-primary" onClick=""> Open </a>
+        </li>
+        {% endfor%}
+    </ul>
 
 
 {%endblock%}

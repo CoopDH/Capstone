@@ -6,6 +6,21 @@
     <!--TEMP Delete befor production-->
     <h4 align="center"> This page will display current user information and allow them to change their password</h4>
     <!--TEMP Delete befor production-->    
-
+    <br />
+    <br />
+    <h4>
+        User ID: {{user.id}} <br>
+        Username: {{user.username}}<br>
+        First Name: {{user.fname}}<br>
+        Last Name: {{user.lname}}<br>
+        User Status: 
+        {% if user.user_status == 0 %}
+            Deactivated
+        {% elif user.user_status == 1%}
+            User
+        {% elif user.user_status == 2%}
+            Admin
+        {% endif %}
+    </h4>
 
 {%endblock%}
