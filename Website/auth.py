@@ -22,6 +22,7 @@ def login():
             else:
                 flash('Log in failed', category='error')
         else:
+            #Not exactly best security practice but best for troubleshooting
             flash('User doesnt exist', category='error')
         
     
@@ -76,7 +77,6 @@ def adduser():
             flash('Password needs to be 7 characters or longer.', category='error')
         #elif adminpassword != current user password
         else:
-            
             new_user = User(username=username,fname=fname, lname=lname,user_status=ustatus, password_hash=generate_password_hash(password1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()

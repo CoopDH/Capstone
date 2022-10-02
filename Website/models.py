@@ -16,10 +16,10 @@ class Entry(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True)
+    username = db.Column(db.String(100), unique=True) #automatically generated to f.lname
     fname = db.Column(db.String(100))
     lname = db.Column(db.String(100))
-    user_status = db.Column(db.Integer)
+    user_status = db.Column(db.Integer) #0 is deactivated, 1 is user, 2 is admin
     password_hash = db.Column(db.String(150))
     user_entries = db.relationship('Entry')
 
@@ -28,7 +28,7 @@ class Ticket(db.Model):
     short_description = db.Column(db.String(200))
     customer_name = db.Column(db.String(200))
     customer_contact = db.Column(db.String(200))
-    status = db.Column(db.Integer)
+    status = db.Column(db.Integer) #0 is closed, 1 is open
     creation_date = db.Column(db.DateTime(timezone=True), default=func.now())
-    close_date = db.Column(db.DateTime(timezone=True), default=func.now())
+    close_date = db.Column(db.DateTime(timezone=True))
     ticket_entries = db.relationship('Entry')
