@@ -1,0 +1,11 @@
+mkdir website
+cd website
+mkdir static
+mkdir templates
+cd ..
+move .\*.html .\website\templates
+move auth.py .\website
+move databse.db .\website
+move models.py .\website
+move views.py .\website
+move __init__.py .\website

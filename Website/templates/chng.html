@@ -1,27 +1,94 @@
 {% extends "base.html" %}
 {% block title %}User Change{% endblock %}
 
-{% block content%} <h1> This is the User Change page</h1>
+{% block content%} <h1> Account Management</h1>
 
-    <!--TEMP Delete befor production-->
-    <h4 align="center"> This page will display the data on a user, similar to the ticket page, and enable the elevated user to commit changes on status or password</h4>
-    <!--TEMP Delete befor production-->    
-    <br />
-    <br />
-    <!--todo: add all editing functions for the accounts-->
-    <h4>
-        User ID: {{usr.id}} <br>
-        Username: {{usr.username}}<br>
-        First Name: {{usr.fname}}<br>
-        Last Name: {{usr.lname}}<br>
-        User Status: 
-        {% if usr.user_status == 0 %}
-            Deactivated
-        {% elif usr.user_status == 1%}
-            User
-        {% elif usr.user_status == 2%}
-            Admin
-        {% endif %}
-    </h4>
+    <!-- Displaying the user information-->
+    <br><br>
+    <div class="form-row align-items-center">
+        <div class="col-auto">
+          <label>User ID</label>
+          <input type="text" value = "{{usr.id}}" readonly>
+        </div>
+        <div class="col-auto">
+            <label>Username</label>
+            <input type="text" value = "{{usr.username}}" readonly>
+          </div>
+          <div class="col-auto">
+            <label>User Status</label>
+            <input type="text" value = "{% if usr.user_status == 0 %}Deactivated{% elif usr.user_status == 1%}User{% elif usr.user_status == 2%}Admin{% endif %}" readonly>
+          </div>
+      </div>
+      <div class="form-row align-items-center">
+        <div class="col-auto">
+            <label>First Name</label>
+            <input type="text" value = "{{usr.fname}}" readonly>
+          </div>
+          <div class="col-auto">
+            <label>Last Name</label>
+            <input type="text" value = "{{usr.lname}}" readonly>
+          </div>
+      </div>
+
+      <!-- Allowing the admin to submit a password change, their password, and the-->
+      <!-- ability to change the user status to disabled, user, or admin-->
+    <br /><br /><br />
+        <form method="POST">
+            <h5 align="left"> Change User Password or Account Status </h5>
+            <div class="form-group">
+                <label for="password1"> New User Password</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password1"
+                    name="password1"
+                    placeholder="Enter new password"
+                />
+            </div>
+            <div class="form-group">
+                <label for="password2"> Confirm User Password</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password2"
+                    name="password2"
+                    placeholder="Confirm new password"
+                />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="currentpwd"> Enter Admin Password </label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="currentpwd"
+                    name="currentpwd"
+                    placeholder="Enter Admin password"
+                />
+            <br />
+            </div>
+            <div class="form-row align-items-center">
+                <div class="col-2">
+                <label for="status">Status</label>
+                <select id="status" class="form-control" name="status">
+                    {% if usr.user_status == 2 %}
+                    <option value='0'>Deactivated</option>
+                    <option value='1'>User</option>
+                    <option value='2'selected>Admin</option>
+                    {% elif usr.user_status == 1 %}
+                    <option value='0'>Deactivated</option>
+                    <option value='1' selected>User</option>
+                    <option value='2'>Admin</option>
+                    {%else%}
+                    <option value='0' selected>Deactivated</option>
+                    <option value='1'>User</option>
+                    <option value='2'>Admin</option>
+                    {%endif%}
+                </select>
+                <br>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </div>
+        </form>
 
 {%endblock%}

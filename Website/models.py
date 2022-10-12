@@ -11,7 +11,7 @@ from sqlalchemy.sql import func
 class Entry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ticket_id = db.Column(db.Integer, db.ForeignKey('ticket.id'))
-    note = db.Column(db.String(100))
+    note = db.Column(db.String(5000))
     time = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 class User(db.Model, UserMixin):
@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
     lname = db.Column(db.String(100))
     user_status = db.Column(db.Integer) #0 is deactivated, 1 is user, 2 is admin
     password_hash = db.Column(db.String(150))
-    user_entries = db.relationship('Entry')
+    user_entries = db.relationship('Entry', backref='owner')
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)

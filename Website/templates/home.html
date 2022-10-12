@@ -1,32 +1,61 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 
-{% block content%} <h1> This is the homepage</h1>
+{% block content%} <h1 align="center">Tickets</h1>
+ 
+    <br />
+    <br />
+    <h4 align="left"> Search tickets </h4>
+    <form method="POST">
+        <!-- displaying the search terms-->
+        <div class="form-row">
+          <div class="col-6">
+            <label for="TicketID">Ticket #</label>
+            <input type="text" class="form-control" id="TicketID" name="TicketID" placeholder="# or #-#">
+          </div>
+          <div class="col-6">
+            <label for="status">Status</label>
+            <select id="status" class="form-control" name="status">
+                <option value='0'>Closed</option>
+                <option value='1' selected>Open</option>
+                <option value='2' >All</option>
+            </select>
+        </div>
+          
+        </div>
 
-    <!--TEMP Delete befor production-->
-    <h4 align="center"> This page will display the current list of open tickets with their ticket number, short description, date of last action</h4>
-    <br />
-    <P1 align="center"> Each ticket will have a button to open that specific ticket. Additionally there will be a query function to filter tickets on this page</P1>
-    <!--TEMP Delete befor production-->    
-    <br />
-    <br />
+        <div class="form-row">
+            <div class="col-6">
+                <label for="start_date">Start date</label>
+                <input type="text" class="form-control" id="start_date" name="start_date" placeholder="YYYY-MM-DD or YYYY-MM-DD HH:MM:SS" >
+              </div>
+              <div class="col-6">
+                  <label for="end_date">End date</label>
+                  <input type="text" class="form-control" id="end_date" name="end_date" placeholder="YYYY-MM-DD or YYYY-MM-DD HH:MM:SS">
+              </div>
+        </div>
+        <br>
+        <div align="right">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+
+      </form>
     <!--Runs through each ticket and prints a list item for them and presents a button to open their page-->
     <h3> Current Tickets</h3>
+    <br>
     <ul class="list-group list-group-flush" id="tickets">
         {% for ticket in tickets%}
-        <li class="list-group-item">
-        Ticket Number: {{ ticket.id }}
-        Short Description: {{ ticket.short_description  }}
-        Customer Name: {{ ticket.customer_name  }}
-        Creation Date: {{ ticket.creation_date  }}
-        Ticket Status: 
+        
+        <div class='message' style=display:inline;>
             {% if ticket.status == 0 %}
-                Closed
+                <h6><a href="/ticket/{{ticket.id}}" class="btn btn-primary" onClick="" style="height:35px; width:600px" > Ticket: {{ ticket.id }}---{{ticket.short_description}} </a>{{'Closed - Opened: ' + ticket.creation_date.strftime("%m/%d/%Y, %H:%M:%S") + ' Closed: ' + ticket.close_date.strftime("%m/%d/%Y, %H:%M:%S")}}</h6>
             {% elif ticket.status == 1%}
-                Open
+                <h6><a href="/ticket/{{ticket.id}}" class="btn btn-primary" onClick="" style="height:35px; width:600px" > Ticket: {{ ticket.id }}---{{ticket.short_description}} </a>{{'Open - Opened: ' + ticket.creation_date.strftime("%m/%d/%Y, %H:%M:%S")}}</h6>
             {% endif %}
-        <a href="/ticket/{{ticket.id}}" class="btn btn-primary" onClick=""> Open </a>
-        </li>
+            
+            <br>
+        </div>
+        
         {% endfor%}
     </ul>
 

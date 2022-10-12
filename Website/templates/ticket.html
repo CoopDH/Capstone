@@ -1,13 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Ticket {% if tickets %}{{tickets.id}}{% endif %}{% endblock %}
 
-{% block content%} <h1> This is the ticket page</h1>
-
-    <!--TEMP Delete befor production-->
-    <h4> This page will display either a blank ticket or all the details on a slected ticket</h4>
-    <br />
-    <P1 align="center"> The user will be able to edit items in the ticket and add entries</P1>
-    <!--TEMP Delete befor production-->    
+{% block content%} <h1> {% if tickets %}Ticket {{tickets.id}} : {{tickets.short_description[0:52]}}{%else%} New Ticket{% endif %}</h1>
 
     <br />
     <br />
@@ -17,26 +11,26 @@
         <div class="form-row align-items-center">
           <div class="col-auto">
             <label for="TicketID">Ticket #</label>
-            <input type="text" id="TicketID" name="TicketID" placeholder="###" {% if tickets %} value = {{tickets.id}}{% endif %} readonly>
+            <input type="text" id="TicketID" name="TicketID" placeholder="###" {% if tickets %} value = "{{tickets.id}}"{% endif %} readonly>
           </div>
           <div class="col-auto">
             <label for="creation_date">Creation date</label>
-            <input type="text" id="creation_date" placeholder="Creation Date" name="creation_date" {% if tickets %} value={{tickets.creation_date}}{% endif %} readonly>
+            <input type="text" id="creation_date" placeholder="Creation Date" name="creation_date" {% if tickets %} value="{{tickets.creation_date}}"{% endif %} readonly>
           </div>
           <div class="col-auto">
               <label for="close_date">Closed date</label>
-              <input type="text" id="close_date" placeholder="Closed Date" name="close_date" {% if tickets %} value={{tickets.close_date}} {% endif %} readonly>
+              <input type="text" id="close_date" placeholder="Closed Date" name="close_date" {% if tickets %} value="{{tickets.close_date}}" {% endif %} readonly>
           </div>
         </div>
         <!-- Row 2,  Customer Name & Customer Contact-->
         <div class="form-row">
             <div class="form-group col-md-6">
               <label for="customer_name">Customer Name</label>
-              <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Customer Name" {% if tickets %} value={{tickets.customer_name}}{% endif %}>
+              <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Customer Name" {% if tickets %} value="{{tickets.customer_name}}"{% endif %}>
             </div>
             <div class="form-group col-md-6">
               <label for="customer_contact">Customer Contact</label>
-              <input type="text" class="form-control" id="customer_contact" name="customer_contact" placeholder="Customer Contact" {% if tickets %} value={{tickets.customer_contact}}{% endif %}>
+              <input type="text" class="form-control" id="customer_contact" name="customer_contact" placeholder="Customer Contact" {% if tickets %} value="{{tickets.customer_contact}}"{% endif %}>
             </div>
           </div>
         <!-- Row 3,  Status & Short Description-->
@@ -60,20 +54,29 @@
             </div>
             <div class="col-9">
                 <label for="short_description">Short Description</label>
-                <input type="text" class="form-control" id="short_description" name="short_description"placeholder="Short Description" {% if tickets %} value={{tickets.short_description}}{% endif %}>
-              </div>
+                <input type="text" class="form-control" id="short_description" name="short_description" placeholder="Short Description" {% if tickets %} value="{{tickets.short_description}}"{% endif %}>
+            </div>
         </div>
         <br />
         <br />
-
+        
+        <!-- Displaying all of the entries currently associated to the ticket-->
         <h3 align="center"> Entries</h3>
+        <ul class="list-group list-group-flush" id="notes">
+            {%for entry in tickets.ticket_entries%}
+            <div class='message'>
+                <h5>{{ entry.owner.username + ' ' + entry.time.strftime("%m/%d/%Y, %H:%M:%S") }}</h5>
+                <p>{{ entry.note  }}</p>
+            </div>
+            
+            {% endfor %}
+        </ul> 
 
-        <!-- Text area for note entry
-        -todo-  display all notes associated to this ticket-->
+        <!-- Text area to enter a new ticket-->
         <textarea name="note" id="note" class="form-control"></textarea>
         <br />
         <div align="center">
-            <button type="submit" class="btn btn-primary">Add Entry</button>
+            <button type="submit" class="btn btn-primary">Update / Add Entry</button>
         </div>
         
       </form>

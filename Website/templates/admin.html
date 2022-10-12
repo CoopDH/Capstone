@@ -1,30 +1,70 @@
 {% extends "base.html" %}
 {% block title %}Admin{% endblock %}
 
-{% block content%} <h1> This is the admin page</h1>
+{% block content%} <h1> Admin - Account Management </h1>
+    <br><br>
+    <div align="right">
+        <a href="/adduser" align="right" class="btn btn-primary"  onClick="" >Add User</a>
+    </div>
+    <br>
+    <form method="POST">
+        <!-- Displaying the search sections-->
+        <div class="form-row">
+          <div class="col-6">
+            <label for="UserID">User ID</label>
+            <input type="text" class="form-control" id="UserID" name="UserID" placeholder="# or #-#">
+          </div>
+          <div class="col-6">
+            <label for="user_status">User Status</label>
+            <select id="user_status" class="form-control" name="user_status">
+                <option value='3' selected>Active Accounts</option>
+                <option value='1'>Users</option>
+                <option value='2' >Admins</option>
+                <option value='0' >Deactivated</option>
+                <option value='4' >All Accounts</option>
+            </select>
+        </div>
+          
+        </div>
 
-    <!--TEMP Delete befor production-->
-    <h4> This page will display the current list of active users similar to the home page</h4>
-    <br />
-    <P1 align="center"> The elevated user will be able to pick a user to revoke access, elevate, or change their password for them</P1>
-    <!--TEMP Delete befor production-->    
+        <div class="form-row">
+            <div class="col-6">
+                <label for="fname">First Name</label>
+                <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name" >
+              </div>
+              <div class="col-6">
+                  <label for="lname">Last Name</label>
+                  <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name">
+              </div>
+        </div>
+        <br>
+        <div align="right">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <br><br>
+        </div>
+        <br/>
 
+      </form>
+
+
+      <!-- Running through all users identified and displaying the user id as a button-->
+      <!-- username, first and last name, and user status-->
     <ul class="list-group list-group-flush" id="users">
-        {% for user in users%}
+        {% for temp in users%}
         <li class="list-group-item">
-            User ID: {{user.id}}
-            Username: {{user.username}}
-            First Name: {{user.fname}}
-            Last Name: {{user.lname}}
-            User Status: 
-            {% if user.user_status == 0 %}
+            <a href="/chng/{{temp.id}}" class="btn btn-primary" onClick="">User ID: {{temp.id}}</a>
+            {{temp.username}}
+            &nbsp;&nbsp;&nbsp;&nbsp;First Name: {{temp.fname}}
+            &nbsp;&nbsp;&nbsp;&nbsp;Last Name: {{temp.lname}}
+            &nbsp;&nbsp;&nbsp;&nbsp;User Status: 
+            {% if temp.user_status == 0 %}
                 Deactivated
-            {% elif user.user_status == 1%}
+            {% elif temp.user_status == 1%}
                 User
-            {% elif user.user_status == 2%}
+            {% elif temp.user_status == 2%}
                 Admin
             {% endif %}
-            <a href="/chng/{{user.id}}" class="btn btn-primary" onClick=""> Open </a>
+
         </li>
         {% endfor%}
     </ul>

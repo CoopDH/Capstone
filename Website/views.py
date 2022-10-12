@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, request
 from flask_login import  login_required, current_user
-from sqlalchemy import null
+from sqlalchemy import or_
 from . import db
 from sqlalchemy.sql import func
 from .models import Ticket, Entry, User
@@ -11,14 +11,49 @@ views = Blueprint('views', __name__)
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    return render_template("home.html", user=current_user, tickets=Ticket.query.all())
+    if request.method == "POST":
+        ticketID = request.form.get('TicketID')
+        start_date = request.form.get('start_date')
+        end_date = request.form.get("end_date")
+        status = request.form.get('status')
+        query_filter = []
+                
+                
+        #The query filter variable is a means to add specific variables that are needed
+        #If a query section is filled, it will append the key search function to the 
+        #query filter variable to then be ran        
+        if ticketID:
+            if "-" in ticketID:
+                ticketLeft = ticketID.split("-")[0]
+                ticketRight = ticketID.split("-")[1]
+                query_filter.append(Ticket.id >= ticketLeft)
+                query_filter.append(Ticket.id <= ticketRight)
+            else:
+                query_filter.append(Ticket.id == ticketID)
+                       
+        if int(status) != 2:
+            query_filter.append(Ticket.status == status)
+        
+        if end_date:
+            query_filter.append(Ticket.creation_date <= end_date)
+        
+        if start_date:
+            query_filter.append(or_(Ticket.close_date >= start_date, Ticket.status == 1))
+           
+        tickets=Ticket.query.filter(*query_filter) 
+     
+
+                
+        return render_template("home.html", user=current_user, tickets=tickets)
+
+
+        
+    return render_template("home.html", user=current_user, tickets=Ticket.query.filter(Ticket.status == 1))
 
 
 #If this page is pulled from the home page, specifically identifying a ticket to open
 #it will load that tickets information, which will allow editing. Otherwise this is 
 #all associated to getting the information from the form to open a ticket.
-#--todo--
-#add note saving for display 
 @views.route('/ticket', defaults={'tkt' : 0}, methods=['GET', 'POST']) 
 @views.route('/ticket/<int:tkt>', methods=['GET', 'POST'])
 @login_required
@@ -31,7 +66,7 @@ def ticket(tkt):
         status = request.form.get('status')
         note = request.form.get('note')
         user=current_user
-              
+        
         #validation
         if len(customer_name) < 1:
             flash('Please enter a customer.', category='error')
@@ -52,7 +87,7 @@ def ticket(tkt):
                 if int(status) == 0:
                     tickets.close_date=func.now()
                 else:
-                    pass#tickets.close_date=null 
+                    pass
                 db.session.commit() 
             elif tickets.status != int(status) and user.user_status != 2:
                 flash('Only an admin can change the status of a ticket.', category='error')
@@ -68,11 +103,60 @@ def ticket(tkt):
             db.session.add(new_ticket)
             db.session.commit()
             flash('Ticket ' + str(new_ticket.id) + ' added', category='success')
-        return render_template("home.html", user=current_user, tickets=Ticket.query.all())
+            
+        #adding the a note to either the new ticket or current ticket    
+        if len(note) > 1:
+            if ticketID:
+                new_entry = Entry(note=note, ticket_id=tickets.id, user_id=current_user.id)
+            else:
+                new_entry = Entry(note=note, ticket_id=new_ticket.id, user_id=current_user.id)
+            db.session.add(new_entry)
+            db.session.commit()
+            flash('Entry added', category='success')
+            
+        return render_template("home.html", user=current_user, tickets=Ticket.query.filter(Ticket.status == 1))
     return render_template("ticket.html", user=current_user, tickets=Ticket.query.filter_by(id=tkt).first())
+
+
 
 #just needs to pass all of the users so it can display each user on this page
 @views.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
-    return render_template("admin.html", user=current_user, users=User.query.all())
+    if request.method == "POST":
+        userid = request.form.get('UserID')
+        user_status = request.form.get('user_status')
+        fname = request.form.get("fname")
+        lname = request.form.get('lname')
+        query_filter = []
+                
+        #The query filter variable is a means to add specific variables that are needed
+        #If a query section is filled, it will append the key search function to the 
+        #query filter variable to then be ran          
+                
+        if userid:
+            if "-" in userid:
+                IDLeft = userid.split("-")[0]
+                IDRight = userid.split("-")[1]
+                query_filter.append(User.id >= IDLeft)
+                query_filter.append(User.id <= IDRight)
+            else:
+                query_filter.append(User.id == userid)
+         
+        if int(user_status) == 3:
+            query_filter.append(User.user_status != 0)
+        elif int(user_status) < 3:
+            query_filter.append(User.user_status == user_status)
+        
+        if fname:
+            query_filter.append(User.fname.like(fname))
+        
+        if lname:
+            query_filter.append(User.lname.like(lname))
+           
+        users=User.query.filter(*query_filter) 
+                
+        return render_template("admin.html", user=current_user, users=users)
+    
+    
+    return render_template("admin.html", user=current_user, users=User.query.filter(User.user_status != 0))
