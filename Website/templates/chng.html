@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block title %}User Change{% endblock %}
 
-{% block content%} <h1> Account Management</h1>
+{% block content%} 
+{% if user.user_status == 2%}
+<h1> Account Management</h1>
 
     <!-- Displaying the user information-->
     <br><br>
@@ -90,5 +92,7 @@
             </div>
             </div>
         </form>
-
+        {%else%}
+        <h1> Unable to access link. Please contact an Admin to troubleshoot </h1>
+        {%endif%}
 {%endblock%}

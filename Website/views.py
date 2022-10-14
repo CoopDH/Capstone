@@ -77,35 +77,38 @@ def ticket(tkt):
         #if there is a valid ticket id in the entry, you are editing a ticket
         elif ticketID:
             tickets=Ticket.query.filter_by(id=ticketID).first()
-            
+            if tickets.short_description != short_description or tickets.customer_name != customer_name or tickets.customer_contact != customer_contact:
+                if tickets.status == 1:
+                    tickets.short_description=short_description
+                    tickets.customer_name=customer_name
+                    tickets.customer_contact=customer_contact
+                    db.session.commit()
+                else:
+                    flash('You can not edit a closed ticket.', category='error')
             #If the ticket status is getting changd, only an admin can do it
             if tickets.status != int(status) and user.user_status == 2:
-                tickets.short_description=short_description
-                tickets.customer_name=customer_name
-                tickets.customer_contact=customer_contact
-                tickets.status=status
                 if int(status) == 0:
+                    tickets.status=status
                     tickets.close_date=func.now()
+                    db.session.commit()
                 else:
-                    pass
-                db.session.commit() 
+                    flash('You can not open a closed ticket.', category='error')
             elif tickets.status != int(status) and user.user_status != 2:
                 flash('Only an admin can change the status of a ticket.', category='error')
-            else:
-                #If just changing normal info, anyone can do it
-                tickets.short_description=short_description
-                tickets.customer_name=customer_name
-                tickets.customer_contact=customer_contact
-                db.session.commit()           
+                    
         else:
             #Adding a ticket
-            new_ticket = Ticket(short_description=short_description,customer_name=customer_name, customer_contact=customer_contact,status=status, creation_date=func.now())
+            #Checking status ensures that creating a ticket that is closed, does not break the home page trying to display it.
+            if int(status) == 1:
+                new_ticket = Ticket(short_description=short_description,customer_name=customer_name, customer_contact=customer_contact,status=status, creation_date=func.now())
+            else:
+                new_ticket = Ticket(short_description=short_description,customer_name=customer_name, customer_contact=customer_contact,status=status, creation_date=func.now(), close_date=func.now())
             db.session.add(new_ticket)
             db.session.commit()
             flash('Ticket ' + str(new_ticket.id) + ' added', category='success')
             
         #adding the a note to either the new ticket or current ticket    
-        if len(note) > 1:
+        if len(note) > 1 and tickets.status == 1:
             if ticketID:
                 new_entry = Entry(note=note, ticket_id=tickets.id, user_id=current_user.id)
             else:
@@ -113,8 +116,10 @@ def ticket(tkt):
             db.session.add(new_entry)
             db.session.commit()
             flash('Entry added', category='success')
+        elif len(note) > 1 and tickets.status == 0:
+            flash('You can not create entries on a closed ticket.', category='error')
             
-        return render_template("home.html", user=current_user, tickets=Ticket.query.filter(Ticket.status == 1))
+        return render_template("ticket.html", user=current_user, tickets=Ticket.query.filter_by(id=tkt).first())
     return render_template("ticket.html", user=current_user, tickets=Ticket.query.filter_by(id=tkt).first())
 
 

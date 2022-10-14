@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Admin{% endblock %}
-
-{% block content%} <h1> Admin - Account Management </h1>
+{% block content%} 
+{% if user.user_status == 2%}
+<h1> Admin - Account Management </h1>
     <br><br>
     <div align="right">
         <a href="/adduser" align="right" class="btn btn-primary"  onClick="" >Add User</a>
@@ -69,5 +70,8 @@
         {% endfor%}
     </ul>
 
+    {%else%}
+    <h1> Unable to access link. Please contact an Admin to troubleshoot </h1>
+    {%endif%}
 
 {%endblock%}
